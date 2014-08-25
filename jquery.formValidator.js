@@ -64,7 +64,7 @@
 
         function showErrorMessage (form, field) {
             form.find(errorField).text(field.attr("error-message"));
-            field.focus();
+            field.focus().addClass("error");
         }
 
         function validate (form) {      
@@ -106,8 +106,8 @@
                             return false;
                         }
                     }                    
-                }                
-            });
+                }           
+            });           
         }
 
         return this.each (function () {
