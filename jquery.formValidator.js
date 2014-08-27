@@ -67,53 +67,71 @@
             field.focus().addClass("error");
         }
 
-        function validate (form) {      
+        function validate (form, element) {
+            var field =  element;        
 
-            form.on("submit", function () {
+            if(field.attr("type") !== "checkbox" && field.attr("type") !== "radio") {
+                if(!notNull(field)) {
+                    showErrorMessage(form, field);
+                    return false;
+                }  
 
-                var fields = form.find("input, select, textarea");
+                if(field.attr("type") === "email") {
+                    if(!isEmail(field)) {
+                        showErrorMessage(form, field);
+                        return false;
+                    }
+                }
+                
+                if(typeof field.attr("confirm") !== typeof undefined && field.attr("confirm") !== false) {
+                    if(!compare(field)) {
+                        showErrorMessage(form, field);                         
+                        return false;
+                    }
+                }  
+
+                return true;                    
+            } else {                        
+                if(checkType(field) === false) {  
+                    showErrorMessage(form, field);                        
+                    return false;
+                }
+
+                return true;
+            } 
+        }
+
+        function init (form) {     
+
+            var fields = form.find("input, select, textarea"); 
+
+            form.on("submit", function () {   
+                // e.preventDefault();             
                 
                 for(var i = 0; i < fields.length; i++) {
                     var field =  $(fields[i]),
-                        attr = field.attr("novalidate");
-                    
+                        attr = field.attr("novalidate");   
+
                     if( typeof attr !== typeof undefined && attr !== false ) {
                         continue;
                     }
 
-                    if(field.attr("type") !== "checkbox" && field.attr("type") !== "radio") {
-                        if(!notNull(field)) {
-                            showErrorMessage(form, field);
-                            return false;
-                        }  
+                    if(!validate(form, field)) { 
+                        return false;
+                    }
+                }
 
-                        if(field.attr("type") === "email") {
-                            if(!isEmail(field)) {
-                                showErrorMessage(form, field);
-                                return false;
-                            }
-                        }
-                        
-                        if(typeof field.attr("confirm") !== typeof undefined && field.attr("confirm") !== false) {
-                            if(!compare(field)) {
-                                showErrorMessage(form, field);                         
-                                return false;
-                            }
-                        }                      
-                    } else {                        
-                        if(checkType(field) === false) {  
-                            showErrorMessage(form, field);                        
-                            return false;
-                        }
-                    }                    
-                }           
-            });           
+            });   
+
+            fields.on("blur", function () {
+                validate($(form), $(this));
+            });        
         }
 
         return this.each (function () {
             var form = $(this);
             form.attr("novalidate","novalidate");
-            validate(form);
+            init(form);
         });
     };
 })(jQuery);
