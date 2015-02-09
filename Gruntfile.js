@@ -3,15 +3,15 @@ module.exports = function(grunt) {
 	// Project configuration.
 	grunt.initConfig({
 
-		concat: {
-			options: {
-				separator: ';',
-			},
-			dist: {
-				src: ['jquery.formValidator.js'],
-				dest: 'build/jquery.formValidator.min.js',
-			},
-		},
+		// concat: {
+		// 	options: {
+		// 		separator: ';',
+		// 	},
+		// 	dist: {
+		// 		src: ['jquery.formValidator.js'],
+		// 		dest: 'build/jquery.formValidator.min.js',
+		// 	},
+		// },
 
 		uglify: {
 			compress: {
@@ -29,7 +29,7 @@ module.exports = function(grunt) {
 		watch: {			
 			scripts: {
 				files: ['*.js'],
-				tasks: ['concat'],
+				tasks: ['uglify'],
 				options: {
 					spawn: false
 				}
@@ -37,14 +37,10 @@ module.exports = function(grunt) {
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-contrib-concat');
+	// grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// default task
-	grunt.registerTask('default', ['concat', 'uglify']);
-	// grunt w
-	grunt.registerTask('w', ['concat', 'uglify']);
-
-
+	grunt.registerTask('default', ['uglify']);
 };

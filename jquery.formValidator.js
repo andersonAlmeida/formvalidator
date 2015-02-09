@@ -6,7 +6,9 @@
         var defaults = {
             messageField: ".message"
         },
-            settings = $.extend( {}, defaults, options ),
+            settings = $.extend( {
+                isvalid: null
+            }, defaults, options ),
             errorField = $(settings.messageField);
 
         function notNull (field) {
@@ -90,6 +92,8 @@
                     }
                 }  
 
+                field.removeClass("error"); 
+                form.find(errorField).text("");
                 return true;                    
             } else {                        
                 if(checkType(field) === false) {  
@@ -97,8 +101,10 @@
                     return false;
                 }
 
+                field.removeClass("error"); 
+                form.find(errorField).text("");
                 return true;
-            } 
+            }
         }
 
         function init (form) {     
@@ -118,13 +124,23 @@
 
                     if(!validate(form, field)) { 
                         return false;
+                    } else if(typeof settings.isvalid === 'function') {
+                        settings.isvalid.call(this);
+                        return false;
                     }
                 }
 
             });   
 
             fields.on("blur", function () {
-                validate($(form), $(this));
+                var field = $(this),
+                    attr = field.attr("novalidate");
+
+                if( typeof attr !== typeof undefined && attr !== false ){
+                    return false;
+                }
+                
+                validate($(form), field);
             });        
         }
 
